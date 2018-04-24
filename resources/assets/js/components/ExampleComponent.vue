@@ -17,7 +17,9 @@
 <script>
     export default {
         mounted() {
-            console.log('Component mounted.')
+            axios.post('/api/test', {}).then(function(){
+
+            });
         }
     }
 </script>

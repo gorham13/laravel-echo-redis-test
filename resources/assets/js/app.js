@@ -1,3 +1,4 @@
+import Axios from 'axios';
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -18,5 +19,13 @@ window.Vue = require('vue');
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    created() {
+        let data = this;
+        window.Echo.channel('testChannel')
+            .listen('TestEvent', (e) => {
+                console.log('testEvent');
+                console.log(e.test);
+            });
+    },
 });
