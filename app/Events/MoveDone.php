@@ -10,22 +10,26 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class TestEvent implements ShouldBroadcast
+class MoveDone implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $token;
-    public $userName;
+    public $x;
+    public $y;
+    public $color;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($token, $userName)
+    public function __construct($token, $x, $y, $color)
     {
         $this->token = $token;
-        $this->userName = $userName;
+        $this->x = $x;
+        $this->y = $y;
+        $this->color = $color;
     }
 
     /**
