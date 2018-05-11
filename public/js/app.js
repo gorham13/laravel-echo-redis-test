@@ -40744,9 +40744,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 if (this.points[x - 1][y - 1] == -1) {
                     this.$refs['point:' + x + ',' + y][0].style.backgroundColor = this.color;
                     this.points[x - 1][y - 1] = 1;
-                    this.checkWinner(x - 1, y - 1);
-                    axios.post('/api/moveDone', { token: this.token, x: x, y: y, color: this.color, user: this.userName }).then(function () {});
-                    this.canClick = 0;
+                    if (!this.checkWinner(x - 1, y - 1)) {
+                        axios.post('/api/moveDone', { token: this.token, x: x, y: y, color: this.color, user: this.userName }).then(function () {});
+                        this.canClick = 0;
+                    }
                 }
             }
         },
@@ -40754,10 +40755,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.diagonalLoop(x, y) || this.verticalLoop(y) || this.horizontalLoop(x) || this.invertDiagonalLoop(x, y)) {
                 axios.post('/api/win', { token: this.token }).then(function () {});
                 this.$swal('Good job!', 'You are winner! And now go and do your work!', 'success');
+                return 1;
             }
+            return 0;
         },
-        diagonalLoop: function diagonalLoop(x, y) {
+        invertDiagonalLoop: function invertDiagonalLoop(x, y) {
             var diagonalStartPoint = { x: x + y, y: 0 };
+            if (x + y > this.x) {
+                diagonalStartPoint = { x: this.x - 1, y: x + y - this.x + 1 };
+            }
             var count = 0;
             while (diagonalStartPoint.x > 0 && diagonalStartPoint.y < this.y) {
                 if (this.points[diagonalStartPoint.x][diagonalStartPoint.y] == 1) {
@@ -40773,7 +40779,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
             return 0;
         },
-        invertDiagonalLoop: function invertDiagonalLoop(x, y) {
+        diagonalLoop: function diagonalLoop(x, y) {
             var diagonalStartPoint = { x: 0, y: 0 };
             if (x > y) {
                 diagonalStartPoint = { x: x - y, y: 0 };

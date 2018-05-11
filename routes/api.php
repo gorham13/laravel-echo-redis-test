@@ -23,21 +23,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('startup', function (Request $request) {
-    if(!User::where('name', $request->userName)->where('room', $request->token)->exists()){
-        $user = new User;
-        $user->name = $request->userName;
-        $user->room = $request->token;
-        $user->save();
+    if(User::where('room', $request->token)->count() < 2){
+        if(!User::where('name', $request->userName)->where('room', $request->token)->exists()){
+            $user = new User;
+            $user->name = $request->userName;
+            $user->room = $request->token;
+            $user->save();
+        }
     }
     $usersInRoom = User::where('room', $request->token)->get();
     $gameData = GameData::where('room', $request->token)->get();
     if($usersInRoom->count() > 1){
         if($gameData->count() < 1){
-            // dd($request->token);
-            // dd($usersInRoom->first()->name);
             broadcast(new TestEvent($request->token, $usersInRoom->first()->name));
         } else {
-            // dd('ok');
             return $gameData;
         }
     }
